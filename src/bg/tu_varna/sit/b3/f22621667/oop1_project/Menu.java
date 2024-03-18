@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.b3.f22621667.oop1_project;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -8,15 +9,15 @@ public class Menu {
     private Map<String, MenuOption> options = new HashMap<>();
 
     public Menu() {
-        options.put("0", new Exit());
-        options.put("1", new Open());
-        options.put("2", new Close());
-        options.put("3", new Safe());
-        options.put("4", new SaveAs());
-        options.put("5", new Help());
+        options.put("exit", new Exit());
+        options.put("open", new Open());
+        options.put("close", new Close());
+        options.put("save", new Save());
+        options.put("save as", new SaveAs());
+        options.put("help", new Help());
     }
 
-    public void display() {
+    public void display() throws IOException {
         StringBuilder menu = new StringBuilder();
         menu.append("1. Open file\n");
         menu.append("2. Close file\n");
