@@ -75,8 +75,8 @@ public class Table {
     }
 
     public String evaluateFormula(String expression) {
-        List<String> operands = new ArrayList<>(Arrays.asList(expression.split("[+\\-*/]")));
-        List<String> operators = new ArrayList<>(Arrays.asList(expression.split("[^+\\-*/]+")));
+        List<String> operands = new ArrayList<>(Arrays.asList(expression.split("[+\\-*/^]")));
+        List<String> operators = new ArrayList<>(Arrays.asList(expression.split("[^+\\-*/^]+")));
         operators.removeIf(String::isEmpty);
 
         for (int i = 0; i < operands.size(); i++) {
@@ -88,11 +88,17 @@ public class Table {
         return evaluateOperations(operands, operators);
     }
 
+
     private String evaluateOperations(List<String> operands, List<String> operators) {
         for (int i = 0; i < operators.size(); i++) {
             if (operators.get(i).equals("*") || operators.get(i).equals("/")) {
                 double result = operate(Double.parseDouble(operands.remove(i)), Double.parseDouble(operands.remove(i)), operators.remove(i));
                 operands.add(i, String.valueOf(result));
+                i--;
+            } else if (operators.get(i).equals("^")) {
+                double result = Math.pow(Double.parseDouble(operands.remove(i)), Double.parseDouble(operands.remove(i)));
+                operands.add(i, String.valueOf(result));
+                operators.remove(i);
                 i--;
             }
         }
@@ -104,6 +110,7 @@ public class Table {
 
         return operands.get(0);
     }
+
 
     private double operate(double operand1, double operand2, String operator) {
         switch (operator) {
