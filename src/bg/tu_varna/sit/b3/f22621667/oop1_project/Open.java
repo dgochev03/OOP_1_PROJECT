@@ -6,15 +6,32 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Open implements MenuOption {
+    private Open instance;
     private FileWriter writer;
     private Table table = new Table();
     private File file;
+    private Scanner scanner;
+
+    public Open() {
+    }
+
+    public void testExecute(String fileName) {
+        processFileName(fileName);
+    }
+
+    public void editTable() {
+
+    }
 
     @Override
     public void execute() {
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.print("Enter the filename: ");
         String filename = scanner.nextLine();
+        processFileName(filename);
+    }
+
+    private void processFileName(String filename) {
         file = new File(filename);
 
         if (file.exists()) {
@@ -26,18 +43,50 @@ public class Open implements MenuOption {
 
     private void openExistingFile(Scanner scanner) {
         try {
+            int maxValuesCount = 0;
+            int currentMaxValuesCount = 0;
+
             scanner = new Scanner(file);
+
+            String input;
             while (scanner.hasNextLine()) {
-                String input = scanner.nextLine();
+                input = scanner.nextLine();
                 String[] cellContents = input.split(",");
-                List<Cell> row = new ArrayList<>();
-                for (String cellContent : cellContents) {
-                    row.add(new Cell(cellContent.trim()));
-                }
-                table.addRow(row);
+                currentMaxValuesCount = cellContents.length;
+                maxValuesCount = Math.max(maxValuesCount, currentMaxValuesCount);
             }
-            System.out.println("Table:");
-            table.printTable();
+
+            scanner.close();
+            scanner = new Scanner(file);
+
+            int rowCount = 0;
+
+            while (scanner.hasNextLine()) {
+                input = scanner.nextLine();
+                String[] cellContents = input.split(",");
+                currentMaxValuesCount = cellContents.length;
+                maxValuesCount = Math.max(maxValuesCount, currentMaxValuesCount);
+
+                List<Cell> row = new ArrayList<>();
+                for (int i = 0; i < cellContents.length; i++) {
+                    String cellContent = cellContents[i];
+                    Cell newCell = new Cell(cellContent.trim());
+                    row.add(newCell);
+                }
+
+                int emptyCellsToAdd = maxValuesCount - row.size();
+                for (int i = 0; i < emptyCellsToAdd; i++) {
+                    Cell emptyCell = Cell.Empty;
+                    row.add(emptyCell);
+                }
+
+                table.addRow(row);
+                rowCount++;
+            }
+
+            //System.out.println("Table:");
+            //table.printTable();
+
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + e.getMessage());
         }
@@ -46,7 +95,7 @@ public class Open implements MenuOption {
     private void createNewFile(Scanner scanner) {
         try {
             file.createNewFile();
-            writer = new FileWriter(file, true); // Append mode
+            writer = new FileWriter(file, true);
 
             System.out.println("Enter table data (one row per line, cells separated by commas):");
             while (true) {
@@ -56,12 +105,12 @@ public class Open implements MenuOption {
                     break;
                 }
                 writer.write(input + "\n");
-                writer.flush(); // Flush after each line to ensure data is written
+                writer.flush();
 
                 String[] cellContents = input.split(",");
                 List<Cell> row = new ArrayList<>();
                 for (String cellContent : cellContents) {
-                    row.add(new Cell(processQuotedString(cellContent.trim())));
+                    row.add(new Cell(cellContent.trim()));
                 }
                 table.addRow(row);
             }
@@ -81,11 +130,6 @@ public class Open implements MenuOption {
             }
         }
     }
-
-    private static String processQuotedString(String content) {
-        return content.replace("\\\"", "\"");
-    }
-
 
     public void save() {
         if (table == null || file == null) {
@@ -113,11 +157,13 @@ public class Open implements MenuOption {
         if (table == null || file == null) {
             return;
         }
-        if (file.exists() && file.delete()) {
+
+        if (file.exists()) {
+            table = null;
             System.out.println("File discarded successfully.");
         } else {
             System.out.println("Failed to discard the file or file does not exist.");
         }
     }
-
 }
+

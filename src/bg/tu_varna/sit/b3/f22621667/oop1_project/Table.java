@@ -12,6 +12,19 @@ public class Table {
     }
 
     public void addRow(List<Cell> row) {
+        if (cells.size() > 0) {
+            int r = cells.size() - 1;
+
+            for (int c = 0; c < cells.get(0).size(); c++) {
+                cells.get(r)
+                        .get(c)
+                        .setRow(r);
+                cells.get(r)
+                        .get(c)
+                        .setCol(c);
+            }
+        }
+
         cells.add(row);
     }
 
@@ -26,52 +39,91 @@ public class Table {
         }
 
         List<Integer> maxColumnLengths = new ArrayList<>();
+        int maxColumnLength = 0;
         for (int i = 0; i < maxRowLength; i++) {
-            int maxColumnLength = 0;
             for (List<Cell> row : cells) {
                 if (i < row.size()) {
-                    maxColumnLength = Math.max(maxColumnLength, row.get(i).getContent().length());
+                    maxColumnLength = Math.max(
+                            maxColumnLength,
+                            row.get(i).getContent().length());
                 }
             }
+
             maxColumnLengths.add(maxColumnLength);
+            maxColumnLength = 0;
         }
 
         StringBuilder tableBuilder = new StringBuilder();
         for (List<Cell> row : cells) {
-            for (int i = 0; i < maxRowLength; i++) {
-                if (i < row.size()) {
-                    Cell cell = row.get(i);
+            for (int c = 0; c < maxRowLength; c++) {
+                if (c < row.size()) {
+                    Cell cell = row.get(c);
                     String content = cell.getContent();
                     if (content.startsWith("=")) {
                         content = evaluateFormula(content.substring(1));
                     }
-                    tableBuilder.append(String.format("%-" + (maxColumnLengths.get(i) + 2) + "s", content)).append("|");
+
+                    tableBuilder
+                            .append(
+                                    String.format("%" + (maxColumnLengths.get(c)) + "s", content))
+                            .append(" |");
+
+                    if (c != row.size() - 1) {
+                        tableBuilder.append(" ");
+                    }
                 } else {
-                    tableBuilder.append(String.format("%-" + (maxColumnLengths.get(i) + 2) + "s", "")).append("|");
+                    tableBuilder
+                            .append(
+                                    String.format("%" + (maxColumnLengths.get(c) + 1) + "s", ""))
+                            .append("|");
                 }
             }
             tableBuilder.append("\n");
         }
 
-        System.out.println(tableBuilder.toString());
+        System.out.println(tableBuilder);
     }
 
     public String getCellValue(String cellReference) {
+        Cell cell = checkCellReference(cellReference);
+        if (cell == null) {
+            return "";
+        }
+
+        String content = cell.getContent();
+        if (content.startsWith("=")) {
+            return evaluateFormula(content.substring(1));
+        } else {
+            return content;
+        }
+    }
+
+    public void setCellValue(String cellReference) {
+        Cell cell = checkCellReference(cellReference);
+        if (cell == null) {
+            return;
+        }
+
+
+    }
+
+    private Cell checkCellReference(String cellReference) {
         String[] coordinates = cellReference.split("C");
+
         int row = Integer.parseInt(coordinates[0].substring(1)) - 1;
         int column = Integer.parseInt(coordinates[1]) - 1;
 
-        if (row >= 0 && row < cells.size() && column >= 0 && column < cells.get(row).size()) {
-            Cell cell = cells.get(row).get(column);
-            String content = cell.getContent();
-            if (content.startsWith("=")) {
-                return evaluateFormula(content.substring(1));
-            } else {
-                return content;
-            }
-        } else {
-            return "0";
+        boolean rowCheck = row >= 0 && row < cells.size();
+        boolean columnCheck = column >= 0 && column < cells.get(row).size();
+
+        if (!rowCheck || !columnCheck) {
+            return null;
         }
+
+        Cell cell = cells
+                .get(row)
+                .get(column);
+        return cell;
     }
 
     public String evaluateFormula(String expression) {
@@ -88,8 +140,9 @@ public class Table {
         return evaluateOperations(operands, operators);
     }
 
-
-    private String evaluateOperations(List<String> operands, List<String> operators) {
+    private String evaluateOperations(
+            List<String> operands,
+            List<String> operators) {
         for (int i = 0; i < operators.size(); i++) {
             if (operators.get(i).equals("*") || operators.get(i).equals("/")) {
                 double result = operate(Double.parseDouble(operands.remove(i)), Double.parseDouble(operands.remove(i)), operators.remove(i));
@@ -111,21 +164,23 @@ public class Table {
         return operands.get(0);
     }
 
-
     private double operate(double operand1, double operand2, String operator) {
         switch (operator) {
-            case "+": return operand1 + operand2;
-            case "-": return operand1 - operand2;
-            case "*": return operand1 * operand2;
+            case "+":
+                return operand1 + operand2;
+            case "-":
+                return operand1 - operand2;
+            case "*":
+                return operand1 * operand2;
             case "/":
                 if (operand2 != 0) {
                     return operand1 / operand2;
                 } else {
                     throw new ArithmeticException("Division by zero");
                 }
-            default: throw new IllegalArgumentException("Invalid operator");
+            default:
+                throw new IllegalArgumentException("Invalid operator");
         }
     }
-
 }
 
