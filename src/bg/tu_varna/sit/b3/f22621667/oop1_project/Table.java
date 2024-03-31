@@ -107,6 +107,18 @@ public class Table {
 
     }
 
+    public void clear() {
+        for (List<Cell> innerList : cells) {
+            for (Cell cell : innerList) {
+                cell = null;
+            }
+
+            innerList.clear();
+        }
+
+        cells.clear();
+    }
+
     private Cell checkCellReference(String cellReference) {
         String[] coordinates = cellReference.split("C");
 
