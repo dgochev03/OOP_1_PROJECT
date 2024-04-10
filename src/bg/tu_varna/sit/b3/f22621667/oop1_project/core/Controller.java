@@ -1,17 +1,20 @@
-package bg.tu_varna.sit.b3.f22621667.oop1_project;
+package bg.tu_varna.sit.b3.f22621667.oop1_project.core;
 
-import bg.tu_varna.sit.b3.f22621667.oop1_project.contracts.IController;
+import bg.tu_varna.sit.b3.f22621667.oop1_project.core.contracts.IController;
+import bg.tu_varna.sit.b3.f22621667.oop1_project.models.Cell;
+import bg.tu_varna.sit.b3.f22621667.oop1_project.models.FileUtility;
+import bg.tu_varna.sit.b3.f22621667.oop1_project.models.Table;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Controller implements IController {
     private Table table;
     private Map<Integer, Runnable> options;
     private FileUtility fileUtility;
-
     public Controller() {
         initializeOptions();
     }
@@ -62,7 +65,47 @@ public class Controller implements IController {
     }
 
     public void edit() {
+        if (table == null) {
+            showEmptyTableMessage();
+            return;
+        }
 
+        Scanner editCommandScanner = new Scanner(System.in);
+        String inputCommand = "R1C1=1";
+        System.out.println("Enter with the following format R<N>C<M> = <VALUE>:");
+        System.out.print("Please enter command: ");
+        inputCommand = editCommandScanner.nextLine();
+
+        String regex = "\\b(?<cellRef>R\\d+C\\d+)\\b\\s*=*\\s*(?<value>.*)";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(inputCommand);
+
+        if (!matcher.find()) {
+            System.out.println("Invalid edit command.");
+            System.out.println("FORMAT: R<N>C<M> = <VALUE>");
+            return;
+        }
+
+        String cellReference = matcher.group("cellRef");
+        String newValue = matcher.group("value");
+
+        Cell oldCell = table.getCell(cellReference);
+
+        if (oldCell == null) {
+            System.out.println("Cell coordinates not found");
+            return;
+        }
+
+        String oldValue = oldCell.getContent();
+        table.setCellValue(cellReference, newValue);
+        String message = String.format(
+                "Cell at row %d col %d with old value %s is edited with new value %s",
+                oldCell.getRow(),
+                oldCell.getCol(),
+                oldValue,
+                oldCell.getContent());
+        System.out.println(message);
     }
 
     public void print() {
