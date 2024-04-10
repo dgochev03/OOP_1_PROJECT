@@ -52,6 +52,11 @@ public class Controller implements IController {
             return;
         }
 
+        if (!filename.endsWith(".txt")) {
+            System.out.println("Invalid file format. File name must end with '.txt'.");
+            return;
+        }
+
         if (table == null) {
             table = new Table();
         }
