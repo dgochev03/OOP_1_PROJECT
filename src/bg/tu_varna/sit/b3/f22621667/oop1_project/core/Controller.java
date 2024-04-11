@@ -8,8 +8,6 @@ import bg.tu_varna.sit.b3.f22621667.oop1_project.models.Table;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Controller implements IController {
     private Table table;
@@ -76,24 +74,24 @@ public class Controller implements IController {
         }
 
         Scanner editCommandScanner = new Scanner(System.in);
-        String inputCommand = "R1C1=1";
         System.out.println("Enter with the following format R<N>C<M> = <VALUE>:");
         System.out.print("Please enter command: ");
-        inputCommand = editCommandScanner.nextLine();
+        String inputCommand = editCommandScanner.nextLine();
 
-        String regex = "\\b(?<cellRef>R\\d+C\\d+)\\b\\s*=*\\s*(?<value>.*)";
-
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(inputCommand);
-
-        if (!matcher.find()) {
+        String[] parts = inputCommand.split("=");
+        if (parts.length != 2) {
             System.out.println("Invalid edit command.");
             System.out.println("FORMAT: R<N>C<M> = <VALUE>");
             return;
         }
 
-        String cellReference = matcher.group("cellRef");
-        String newValue = matcher.group("value");
+        String cellReference = parts[0].trim();
+        String newValue = parts[1].trim();
+
+        if (!cellReference.startsWith("R") || cellReference.length() < 4 || !cellReference.contains("C")) {
+            System.out.println("Invalid cell reference format");
+            return;
+        }
 
         Cell oldCell = table.getCell(cellReference);
 
@@ -104,10 +102,10 @@ public class Controller implements IController {
 
         String oldValue = oldCell.getContent();
         table.setCellValue(cellReference, newValue);
+
         String message = String.format(
-                "Cell at row %d col %d with old value %s is edited with new value %s",
-                oldCell.getRow(),
-                oldCell.getCol(),
+                "Cell at %s with old value %s is edited with new value %s",
+                cellReference,
                 oldValue,
                 oldCell.getContent());
         System.out.println(message);
