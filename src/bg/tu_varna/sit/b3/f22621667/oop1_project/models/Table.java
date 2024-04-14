@@ -129,8 +129,13 @@ public class Table {
 
     public String getCellValue(String cellReference) {
         Cell cell = getCell(cellReference);
+
         if (cell == null) {
-            return "0";
+            try {
+                return String.valueOf(Double.parseDouble(cellReference));
+            } catch (NumberFormatException e) {
+                return String.valueOf(0);
+            }
         }
 
         return String.valueOf(cell.getNumericValue());
@@ -163,6 +168,10 @@ public class Table {
 
     private Cell checkCellReference(String cellReference) {
         String[] coordinates = cellReference.split("C");
+
+        if (coordinates.length != 2) {
+            return null;
+        }
 
         int row = Integer.parseInt(coordinates[0].substring(1)) - 1;
         int column = Integer.parseInt(coordinates[1]) - 1;
