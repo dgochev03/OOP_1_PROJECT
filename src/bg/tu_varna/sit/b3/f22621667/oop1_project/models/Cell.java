@@ -1,6 +1,7 @@
 package bg.tu_varna.sit.b3.f22621667.oop1_project.models;
 
-import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class Cell {
@@ -97,28 +98,65 @@ public class Cell {
     }
 
     public void checkAndExtract(String input) {
-        if (!input.contains("=")) {
+        if (!input.startsWith("=")) {
+            setContent(input);
             return;
         }
 
-        String regex =
-                "(\\s*)=+\\s*(?<leftOp>R\\d+C\\d+|\\d)\\s*" +
-                        "(?<operator>[-+*/]{1})\\s*" +
-                        "(?<rightOp>R\\d+C\\d+|\\d)";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(input);
+        String formula = input.substring(1).trim();
 
-        if (!matcher.find()) {
-            //System.out.println("String does not match the pattern.");
+        List<String> operands = new ArrayList<>();
+        List<String> operators = new ArrayList<>();
+
+        StringBuilder currentOperand = new StringBuilder();
+        boolean isOperand = false;
+        boolean isStringLiteral = false;
+        char lastChar = '\0';
+
+        for (int i = 0; i < formula.length(); i++) {
+            char currentChar = formula.charAt(i);
+
+            if (currentChar == '"') {
+                isStringLiteral = !isStringLiteral;
+            }
+
+            if (Character.isWhitespace(currentChar) && !isStringLiteral) {
+                continue;
+            }
+
+            if (isOperator(currentChar) && !isStringLiteral) {
+                operands.add(currentOperand.toString());
+                currentOperand.setLength(0);
+
+                operators.add(String.valueOf(currentChar));
+                isOperand = false;
+            } else {
+                currentOperand.append(currentChar);
+                isOperand = true;
+            }
+
+            if (i == formula.length() - 1 && isOperand) {
+                operands.add(currentOperand.toString());
+            }
+
+            lastChar = currentChar;
+        }
+
+        if (operands.size() != operators.size() + 1) {
+            setContent(input);
             return;
         }
 
-        rightOperand = matcher.group("rightOp");
-        operator = matcher.group("operator");
-        leftOperand = matcher.group("leftOp");
+        leftOperand = operands.get(0);
+        operator = operators.get(0);
+        rightOperand = operands.get(1);
 
         isFormula = true;
         isCalculated = false;
+    }
+
+    private boolean isOperator(char c) {
+        return c == '+' || c == '-' || c == '*' || c == '/';
     }
 
     private String normalizeString(String input) {
