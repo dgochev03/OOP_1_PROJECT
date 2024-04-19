@@ -1,9 +1,5 @@
 package bg.tu_varna.sit.b3.f22621667.oop1_project.models;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 public class Cell {
     private String content;
     private int row;
@@ -20,12 +16,6 @@ public class Cell {
     public Cell(String content) {
         checkAndExtract(content);
         setContent(content);
-    }
-
-    public Cell(String content, int row, int col) {
-        setContent(content);
-        setRow(row);
-        setCol(col);
     }
 
     public String getContent() {
@@ -52,16 +42,8 @@ public class Cell {
         this.isCalculated = true;
     }
 
-    public int getRow() {
-        return row;
-    }
-
     public void setRow(int row) {
         this.row = row;
-    }
-
-    public int getCol() {
-        return col;
     }
 
     public void setCol(int col) {
@@ -98,65 +80,53 @@ public class Cell {
     }
 
     public void checkAndExtract(String input) {
-        if (!input.startsWith("=")) {
+         if (!input.startsWith("=")) {
             setContent(input);
             return;
-        }
+         }
 
         String formula = input.substring(1).trim();
 
-        List<String> operands = new ArrayList<>();
-        List<String> operators = new ArrayList<>();
-
-        StringBuilder currentOperand = new StringBuilder();
-        boolean isOperand = false;
+         StringBuilder leftOperandBuilder = new StringBuilder();
+        StringBuilder rightOperandBuilder = new StringBuilder();
+        String operator = null;
         boolean isStringLiteral = false;
-        char lastChar = '\0';
 
-        for (int i = 0; i < formula.length(); i++) {
-            char currentChar = formula.charAt(i);
+        for (char currentChar : formula.toCharArray()) {
+           if (currentChar == '"') {
+               isStringLiteral = !isStringLiteral;
+           }
 
-            if (currentChar == '"') {
-                isStringLiteral = !isStringLiteral;
-            }
+           if (Character.isWhitespace(currentChar) && !isStringLiteral) {
+               continue;
+           }
 
-            if (Character.isWhitespace(currentChar) && !isStringLiteral) {
-                continue;
-            }
-
-            if (isOperator(currentChar) && !isStringLiteral) {
-                operands.add(currentOperand.toString());
-                currentOperand.setLength(0);
-
-                operators.add(String.valueOf(currentChar));
-                isOperand = false;
-            } else {
-                currentOperand.append(currentChar);
-                isOperand = true;
-            }
-
-            if (i == formula.length() - 1 && isOperand) {
-                operands.add(currentOperand.toString());
-            }
-
-            lastChar = currentChar;
+           if (isOperator(currentChar) && !isStringLiteral) {
+               operator = String.valueOf(currentChar);
+           } else {
+              if (operator == null) {
+                  leftOperandBuilder.append(currentChar);
+              } else {
+                 rightOperandBuilder.append(currentChar);
+             }
+           }
         }
 
-        if (operands.size() != operators.size() + 1) {
+        if (operator == null || leftOperandBuilder.length() == 0 || rightOperandBuilder.length() == 0) {
             setContent(input);
             return;
         }
 
-        leftOperand = operands.get(0);
-        operator = operators.get(0);
-        rightOperand = operands.get(1);
+        leftOperand = leftOperandBuilder.toString();
+        rightOperand = rightOperandBuilder.toString();
+        this.operator = operator;
 
         isFormula = true;
         isCalculated = false;
     }
 
     private boolean isOperator(char c) {
-        return c == '+' || c == '-' || c == '*' || c == '/';
+        return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
     }
 
     private String normalizeString(String input) {
@@ -187,8 +157,7 @@ public class Cell {
             return true;
         }
 
-        String regex = "^[-+]?\\d*\\.?\\d+$";
-        boolean isNumber = Pattern.matches(regex, this.content);
+        boolean isNumber = isNumeric(this.content);
 
         if (!isNumber && isString) {
             return true;
@@ -196,10 +165,30 @@ public class Cell {
 
         try {
             Double.parseDouble(this.content);
-        } catch (Exception ex) {
+        } catch (NumberFormatException ex) {
             return false;
         }
 
+        return true;
+    }
+
+    private boolean isNumeric(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        boolean decimalPointFound = false;
+        for (char c : str.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                if (c == '.' || c == ',') {
+                    if (decimalPointFound) {
+                        return false;
+                    }
+                    decimalPointFound = true;
+                } else if (c != '-') {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 }

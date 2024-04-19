@@ -17,8 +17,6 @@ public class Table {
         colCount = cellList.size();
 
         for (int c = 0; c < colCount; c++) {
-            // TODO Cell Content Integrity
-
             Cell currentCell = cellList.get(c);
             currentCell.setRow(r);
             currentCell.setCol(c);
@@ -51,6 +49,7 @@ public class Table {
 
                 String leftOp = cell.getLeftOperand();
                 String rightOp = cell.getRightOperand();
+                String operator = cell.getOperator();
 
                 String leftOpNumericValue = getCellValue(leftOp);
                 String rightOpNumericValue = getCellValue(rightOp);
@@ -59,17 +58,16 @@ public class Table {
                     continue;
                 }
 
-                String operator = cell.getOperator();
-                List<String> operators = new ArrayList<>();
-                operators.add(operator);
-
-                List<String> operands = new ArrayList<>();
-                operands.add(leftOpNumericValue);
-                operands.add(rightOpNumericValue);
-
-                String result = "ERROR";
-                if (!rightOpNumericValue.equals("0.0")) {
-                    result = evaluateOperations(operands, operators);
+                String result;
+                double resultDouble = operate(leftOpNumericValue, rightOpNumericValue, operator);
+                if (resultDouble == (int) resultDouble) {
+                    int resultInt = (int) resultDouble;
+                    result = Integer.toString(resultInt);
+                }else{
+                    result = Double.toString(resultDouble);
+                }
+                if (rightOpNumericValue.equals("0.0") && operator.equals("/")) {
+                    result = "ERROR";
                 }
 
                 cell.setContent(result);
@@ -106,19 +104,13 @@ public class Table {
                     Cell cell = row.get(c);
                     String content = cell.getContent();
 
-                    tableBuilder
-                            .append(
-                                    String.format("%" + (maxColumnLengths.get(c)) + "s", content))
-                            .append(" |");
+                    tableBuilder.append(String.format("%" + (maxColumnLengths.get(c)) + "s", content)).append(" |");
 
                     if (c != row.size() - 1) {
                         tableBuilder.append(" ");
                     }
                 } else {
-                    tableBuilder
-                            .append(
-                                    String.format("%" + (maxColumnLengths.get(c) + 1) + "s", ""))
-                            .append("|");
+                    tableBuilder.append(String.format("%" + (maxColumnLengths.get(c) + 1) + "s", "")).append("|");
                 }
             }
             tableBuilder.append("\n");
@@ -176,55 +168,20 @@ public class Table {
         int row = Integer.parseInt(coordinates[0].substring(1)) - 1;
         int column = Integer.parseInt(coordinates[1]) - 1;
 
-        if (cells.get(row).isEmpty()) {
+        if (row < 0 || row >= rowCount || column < 0 || column >= colCount) {
             return null;
         }
 
-        boolean columnCheck = column >= 0 && column < cells.get(row).size();
-
-        if (!columnCheck) {
+        if (cells.size() <= row || cells.get(row).isEmpty() || column >= cells.get(row).size()) {
             return null;
         }
 
         return cells.get(row).get(column);
     }
 
-    private String evaluateOperations(
-            List<String> operands,
-            List<String> operators) {
-        for (int i = 0; i < operators.size(); i++) {
-            if (operators.get(i).equals("*") || operators.get(i).equals("/")) {
-                double result = operate(
-                        Double.parseDouble(operands.remove(i)),
-                        Double.parseDouble(operands.remove(i)),
-                        operators.remove(i));
-
-                operands.add(i, String.valueOf(result));
-                i--;
-            } else if (operators.get(i).equals("^")) {
-
-                double result = Math.pow(
-                        Double.parseDouble(operands.remove(i)),
-                        Double.parseDouble(operands.remove(i)));
-
-                operands.add(i, String.valueOf(result));
-                operators.remove(i);
-                i--;
-            }
-        }
-
-        while (!operators.isEmpty()) {
-            double result = operate(
-                    Double.parseDouble(operands.remove(0)),
-                    Double.parseDouble(operands.remove(0)),
-                    operators.remove(0));
-            operands.add(0, String.valueOf(result));
-        }
-
-        return operands.get(0);
-    }
-
-    private double operate(double operand1, double operand2, String operator) {
+    private double operate(String leftOperand, String rightOperand, String operator) {
+        double operand1 = Double.parseDouble(leftOperand);
+        double operand2 = Double.parseDouble(rightOperand);
         switch (operator) {
             case "+":
                 return operand1 + operand2;
@@ -236,13 +193,11 @@ public class Table {
                 if (operand2 != 0) {
                     return operand1 / operand2;
                 } else {
-                    //throw new ArithmeticException("Division by zero");
-                    System.out.println("Division by zero");
                     return 0;
                 }
+            case "^":
+                return Math.pow(operand1, operand2);
             default:
-                //throw new IllegalArgumentException("Invalid operator");
-                System.out.println("Invalid operator");
                 return 0;
         }
     }
@@ -265,4 +220,3 @@ public class Table {
         return sb.toString();
     }
 }
-
