@@ -159,25 +159,31 @@ public class Table {
     }
 
     private Cell checkCellReference(String cellReference) {
-        String[] coordinates = cellReference.split("C");
+        try {
+            String[] coordinates = cellReference.split("C");
 
-        if (coordinates.length != 2) {
+            if (coordinates.length != 2) {
+                return null;
+            }
+
+            int row = Integer.parseInt(coordinates[0].substring(1)) - 1;
+            int column = Integer.parseInt(coordinates[1]) - 1;
+
+            if (row < 0 || row >= rowCount || column < 0 || column >= colCount) {
+                return null;
+            }
+
+            if (cells.size() <= row || cells.get(row).isEmpty() || column >= cells.get(row).size()) {
+                return null;
+            }
+
+            return cells.get(row).get(column);
+        } catch (NumberFormatException | IndexOutOfBoundsException | NullPointerException e) {
+            System.out.println("ERROR: wrong cell coordinate");
             return null;
         }
-
-        int row = Integer.parseInt(coordinates[0].substring(1)) - 1;
-        int column = Integer.parseInt(coordinates[1]) - 1;
-
-        if (row < 0 || row >= rowCount || column < 0 || column >= colCount) {
-            return null;
-        }
-
-        if (cells.size() <= row || cells.get(row).isEmpty() || column >= cells.get(row).size()) {
-            return null;
-        }
-
-        return cells.get(row).get(column);
     }
+
 
     private double operate(String leftOperand, String rightOperand, String operator) {
         double operand1 = Double.parseDouble(leftOperand);

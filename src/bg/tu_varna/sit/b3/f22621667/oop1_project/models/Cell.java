@@ -80,39 +80,45 @@ public class Cell {
     }
 
     public void checkAndExtract(String input) {
-         if (!input.startsWith("=")) {
+        if (!input.startsWith("=")) {
             setContent(input);
             return;
-         }
+        }
 
         String formula = input.substring(1).trim();
 
-         StringBuilder leftOperandBuilder = new StringBuilder();
+        StringBuilder leftOperandBuilder = new StringBuilder();
         StringBuilder rightOperandBuilder = new StringBuilder();
         String operator = null;
         boolean isStringLiteral = false;
+        int operatorCount = 0;
 
         for (char currentChar : formula.toCharArray()) {
-           if (currentChar == '"') {
-               isStringLiteral = !isStringLiteral;
-           }
+            if (currentChar == '"') {
+                isStringLiteral = !isStringLiteral;
+            }
 
-           if (Character.isWhitespace(currentChar) && !isStringLiteral) {
-               continue;
-           }
+            if (Character.isWhitespace(currentChar) && !isStringLiteral) {
+                continue;
+            }
 
-           if (isOperator(currentChar) && !isStringLiteral) {
-               operator = String.valueOf(currentChar);
-           } else {
-              if (operator == null) {
-                  leftOperandBuilder.append(currentChar);
-              } else {
-                 rightOperandBuilder.append(currentChar);
-             }
-           }
+            if (isOperator(currentChar) && !isStringLiteral) {
+                if (operatorCount == 0) {
+                    operator = String.valueOf(currentChar);
+                    operatorCount++;
+                } else {
+                    return;
+                }
+            } else {
+                if (operator == null) {
+                    leftOperandBuilder.append(currentChar);
+                } else {
+                    rightOperandBuilder.append(currentChar);
+                }
+            }
         }
 
-        if (operator == null || leftOperandBuilder.length() == 0 || rightOperandBuilder.length() == 0) {
+        if (operator == null || leftOperandBuilder.length() == 0 || rightOperandBuilder.length() == 0 || operatorCount != 1) {
             setContent(input);
             return;
         }
