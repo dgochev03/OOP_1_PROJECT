@@ -13,6 +13,7 @@ public class Controller implements IController {
     private Table table;
     private Map<String, Runnable> options;
     private FileUtility fileUtility;
+
     public Controller() {
         initializeOptions();
     }
@@ -161,12 +162,12 @@ public class Controller implements IController {
 
     public void help() {
         System.out.println("The following commands are supported:");
-        System.out.println("open <file>\t\t\t\t\topens <file>");
+        System.out.println("open \t\t\t\t\topens file or crete it if it does not exits");
         System.out.println("edit R<N>C<M> = <VALUE>\t\tedits the value of the cell at specified row and column");
         System.out.println("print\t\t\t\t\t\tprints the table to the console");
         System.out.println("close\t\t\t\t\t\tcloses currently opened file");
         System.out.println("save\t\t\t\t\t\tsaves the currently open file");
-        System.out.println("saveas <file>\t\t\t\tsaves the currently open file in <file>");
+        System.out.println("saveas \t\t\t\tsaves the currently open file in a specified directory and name");
         System.out.println("help\t\t\t\t\t\tprints this information");
         System.out.println("exit\t\t\t\t\t\texits the program");
     }
