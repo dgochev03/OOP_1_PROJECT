@@ -90,19 +90,14 @@ public class Cell {
         StringBuilder leftOperandBuilder = new StringBuilder();
         StringBuilder rightOperandBuilder = new StringBuilder();
         String operator = null;
-        boolean isStringLiteral = false;
         int operatorCount = 0;
 
         for (char currentChar : formula.toCharArray()) {
-            if (currentChar == '"') {
-                isStringLiteral = !isStringLiteral;
-            }
-
-            if (Character.isWhitespace(currentChar) && !isStringLiteral) {
+            if (Character.isWhitespace(currentChar)) {
                 continue;
             }
 
-            if (isOperator(currentChar) && !isStringLiteral) {
+            if (isOperator(currentChar)) {
                 if (operatorCount == 0) {
                     operator = String.valueOf(currentChar);
                     operatorCount++;
