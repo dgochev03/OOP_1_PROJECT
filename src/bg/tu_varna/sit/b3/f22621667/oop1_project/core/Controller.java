@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class Controller implements IController {
     private Table table;
-    private Map<Integer, Runnable> options;
+    private Map<String, Runnable> options;
     private FileUtility fileUtility;
     public Controller() {
         initializeOptions();
@@ -30,14 +30,14 @@ public class Controller implements IController {
             options = new HashMap<>();
         }
 
-        options.put(1, this::open);
-        options.put(2, this::edit);
-        options.put(3, this::print);
-        options.put(4, this::close);
-        options.put(5, this::save);
-        options.put(6, this::saveAs);
-        options.put(7, this::help);
-        options.put(0, this::exit);
+        options.put("open", this::open);
+        options.put("edit", this::edit);
+        options.put("print", this::print);
+        options.put("close", this::close);
+        options.put("save", this::save);
+        options.put("saveas", this::saveAs);
+        options.put("help", this::help);
+        options.put("exit", this::exit);
     }
 
     public void open() {
