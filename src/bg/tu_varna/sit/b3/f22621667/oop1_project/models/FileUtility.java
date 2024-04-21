@@ -38,15 +38,18 @@ public class FileUtility {
                 String[] cellContents = input.split(",");
                 currentMaxValuesCount = cellContents.length;
                 maxValuesCount = Math.max(maxValuesCount, currentMaxValuesCount);
+
+                for (int i = 0; i < cellContents.length; i++) {
+                    Cell newCell = new Cell(cellContents[i].trim());
+                    if (!newCell.checkContentIntegrity()) {
+                        cellContents[i] = "\"" + cellContents[i].trim() + "\"";
+                    }
+                }
+                input = String.join(",", cellContents);
+                getMaxValuesCount(input, maxValuesCount);
             }
 
             scanner.close();
-            scanner = new Scanner(file);
-
-            while (scanner.hasNextLine()) {
-                input = scanner.nextLine();
-                getMaxValuesCount(input, maxValuesCount);
-            }
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + e.getMessage());
         }
