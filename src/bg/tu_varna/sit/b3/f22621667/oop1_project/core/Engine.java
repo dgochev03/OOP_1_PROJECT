@@ -30,7 +30,7 @@ public class Engine implements IEngine {
     }
 
     @Override
-    public void Run() {
+    public void run() {
         while (true) {
             String selectedOption = readUserInput();
 
