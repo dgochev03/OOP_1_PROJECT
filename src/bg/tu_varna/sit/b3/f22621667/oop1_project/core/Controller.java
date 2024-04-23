@@ -162,14 +162,14 @@ public class Controller implements IController {
 
     public void help() {
         System.out.println("The following commands are supported:");
-        System.out.println("open \t\t\t\t\topens file or crete it if it does not exits");
-        System.out.println("edit R<N>C<M> = <VALUE>\t\tedits the value of the cell at specified row and column");
-        System.out.println("print\t\t\t\t\t\tprints the table to the console");
-        System.out.println("close\t\t\t\t\t\tcloses currently opened file");
-        System.out.println("save\t\t\t\t\t\tsaves the currently open file");
+        System.out.println("open \t\t\t\topens file or crete it if it does not exits");
+        System.out.println("edit \t\t\t\tedits the value of the cell at specified row and column R<N>C<M> = <VALUE>");
+        System.out.println("print\t\t\t\tprints the table to the console");
+        System.out.println("close\t\t\t\tcloses currently opened file");
+        System.out.println("save\t\t\t\tsaves the currently open file");
         System.out.println("saveas \t\t\t\tsaves the currently open file in a specified directory and name");
-        System.out.println("help\t\t\t\t\t\tprints this information");
-        System.out.println("exit\t\t\t\t\t\texits the program");
+        System.out.println("help\t\t\t\tprints this information");
+        System.out.println("exit\t\t\t\texits the program");
     }
 
     public void exit() {
