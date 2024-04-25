@@ -5,47 +5,12 @@ import bg.tu_varna.sit.b3.f22621667.oop1_project.models.Cell;
 import bg.tu_varna.sit.b3.f22621667.oop1_project.models.FileUtility;
 import bg.tu_varna.sit.b3.f22621667.oop1_project.models.Table;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
 public class Controller implements IController {
     private Table table;
-    private Map<String, Runnable> options;
     private FileUtility fileUtility;
 
-    public Controller() {
-        initializeOptions();
-    }
-
-    public int getOptionsCount() {
-        if (options == null) {
-            return 0;
-        }
-
-        return options.size();
-    }
-
-    private void initializeOptions() {
-        if (options == null) {
-            options = new HashMap<>();
-        }
-
-        options.put("open", this::open);
-        options.put("edit", this::edit);
-        options.put("print", this::print);
-        options.put("close", this::close);
-        options.put("save", this::save);
-        options.put("saveas", this::saveAs);
-        options.put("help", this::help);
-        options.put("exit", this::exit);
-    }
-
-    public void open() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the filename: ");
-        String filename = scanner.nextLine();
-
+    @Override
+    public void open(String filename) {
         if (filename.isEmpty()) {
             System.out.println("File name can not be empty.");
             return;
@@ -68,16 +33,12 @@ public class Controller implements IController {
         }
     }
 
-    public void edit() {
+    @Override
+    public void edit(String inputCommand) {
         if (table == null) {
             showEmptyTableMessage();
             return;
         }
-
-        Scanner editCommandScanner = new Scanner(System.in);
-        System.out.println("Enter with the following format R<N>C<M> = <VALUE>:");
-        System.out.print("Please enter command: ");
-        String inputCommand = editCommandScanner.nextLine();
 
         String[] parts = inputCommand.split("=");
         if (parts.length != 2) {
@@ -112,6 +73,7 @@ public class Controller implements IController {
         System.out.println(message);
     }
 
+    @Override
     public void print() {
         if (table == null) {
             showEmptyTableMessage();
@@ -121,6 +83,7 @@ public class Controller implements IController {
         table.printTable();
     }
 
+    @Override
     public void close() {
         if (table == null) {
             showEmptyTableMessage();
@@ -132,6 +95,7 @@ public class Controller implements IController {
         fileUtility = null;
     }
 
+    @Override
     public void save() {
         if (table == null) {
             showEmptyTableMessage();
@@ -141,15 +105,12 @@ public class Controller implements IController {
         fileUtility.save();
     }
 
-    public void saveAs() {
+    @Override
+    public void saveAs(String saveAsFilePath) {
         if (table == null) {
             showEmptyTableMessage();
             return;
         }
-
-        Scanner fileNameScanner = new Scanner(System.in);
-        System.out.print("Enter file name to save the table: ");
-        String saveAsFilePath = fileNameScanner.nextLine();
 
         if (!saveAsFilePath.endsWith(".txt")) {
             System.out.println("Invalid file format. File name must end with '.txt'.");
@@ -160,18 +121,20 @@ public class Controller implements IController {
         saveAsFileUtility.save();
     }
 
+    @Override
     public void help() {
         System.out.println("The following commands are supported:");
-        System.out.println("open \t\t\t\topens file or crete it if it does not exits");
-        System.out.println("edit \t\t\t\tedits the value of the cell at specified row and column R<N>C<M> = <VALUE>");
-        System.out.println("print\t\t\t\tprints the table to the console");
-        System.out.println("close\t\t\t\tcloses currently opened file");
-        System.out.println("save\t\t\t\tsaves the currently open file");
-        System.out.println("saveas \t\t\t\tsaves the currently open file in a specified directory and name");
-        System.out.println("help\t\t\t\tprints this information");
-        System.out.println("exit\t\t\t\texits the program");
+        System.out.println("open <file>\t\t\t\t\topens <file>");
+        System.out.println("edit R<N>C<M> = <VALUE>\t\tedits the value of the cell at specified row and column");
+        System.out.println("print\t\t\t\t\t\tprints the table to the console");
+        System.out.println("close\t\t\t\t\t\tcloses currently opened file");
+        System.out.println("save\t\t\t\t\t\tsaves the currently open file");
+        System.out.println("saveas <file>\t\t\t\tsaves the currently open file in <file>");
+        System.out.println("help\t\t\t\t\t\tprints this information");
+        System.out.println("exit\t\t\t\t\t\texits the program");
     }
 
+    @Override
     public void exit() {
         System.exit(0);
     }
