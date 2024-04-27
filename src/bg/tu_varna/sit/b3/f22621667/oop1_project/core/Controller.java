@@ -123,15 +123,18 @@ public class Controller implements IController {
 
     @Override
     public void help() {
-        System.out.println("The following commands are supported:");
-        System.out.println("open <file>\t\t\t\t\topens <file>");
-        System.out.println("edit R<N>C<M> = <VALUE>\t\tedits the value of the cell at specified row and column");
-        System.out.println("print\t\t\t\t\t\tprints the table to the console");
-        System.out.println("close\t\t\t\t\t\tcloses currently opened file");
-        System.out.println("save\t\t\t\t\t\tsaves the currently open file");
-        System.out.println("saveas <file>\t\t\t\tsaves the currently open file in <file>");
-        System.out.println("help\t\t\t\t\t\tprints this information");
-        System.out.println("exit\t\t\t\t\t\texits the program");
+        StringBuilder sb = new StringBuilder();
+        sb.append("The following commands are supported:").append("\n");
+        sb.append("open <file>\t\t\t\t\topens <file>").append("\n");
+        sb.append("edit R<N>C<M> = <VALUE>\t\tedits the value of the cell at specified row and column").append("\n");
+        sb.append("print\t\t\t\t\t\tprints the table to the console").append("\n");
+        sb.append("close\t\t\t\t\t\tcloses currently opened file").append("\n");
+        sb.append("save\t\t\t\t\t\tsaves the currently open file").append("\n");
+        sb.append("saveas <file>\t\t\t\tsaves the currently open file in <file>").append("\n");
+        sb.append("help\t\t\t\t\t\tprints this information").append("\n");
+        sb.append("exit\t\t\t\t\t\texits the program").append("\n");
+        String help = sb.toString();
+        System.out.println(help);
     }
 
     @Override
