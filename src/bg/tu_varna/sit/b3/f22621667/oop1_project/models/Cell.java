@@ -133,7 +133,7 @@ public class Cell {
     private String normalizeString(String input) {
         StringBuilder normalized = new StringBuilder();
 
-        boolean inQuotes = false;
+        boolean quoted = false;
         boolean escaped = false;
 
         for (char c : input.toCharArray()) {
@@ -143,10 +143,10 @@ public class Cell {
             } else if (c == '\\') {
                 escaped = true;
             } else if (c == '"') {
-                inQuotes = !inQuotes;
+                quoted = !quoted;
             } else {
                 normalized.append(c);
-                isString = inQuotes;
+                isString = quoted;
             }
         }
 
