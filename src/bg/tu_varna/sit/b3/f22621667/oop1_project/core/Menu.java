@@ -1,17 +1,16 @@
 package bg.tu_varna.sit.b3.f22621667.oop1_project.core;
 
-import bg.tu_varna.sit.b3.f22621667.oop1_project.core.contracts.IController;
-import bg.tu_varna.sit.b3.f22621667.oop1_project.core.contracts.IEngine;
+import bg.tu_varna.sit.b3.f22621667.oop1_project.core.contracts.ControllerOption;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Engine implements IEngine {
-    private final IController controller;
+public class Menu {
+    private final ControllerOption controller;
     private final Map<String, Runnable> options;
 
-    public Engine() {
+    public Menu() {
         this.controller = new Controller();
         this.options = initializeOptions();
     }

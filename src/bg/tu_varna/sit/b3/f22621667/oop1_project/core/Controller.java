@@ -1,11 +1,11 @@
 package bg.tu_varna.sit.b3.f22621667.oop1_project.core;
 
-import bg.tu_varna.sit.b3.f22621667.oop1_project.core.contracts.IController;
+import bg.tu_varna.sit.b3.f22621667.oop1_project.core.contracts.ControllerOption;
 import bg.tu_varna.sit.b3.f22621667.oop1_project.models.Cell;
 import bg.tu_varna.sit.b3.f22621667.oop1_project.models.FileUtility;
 import bg.tu_varna.sit.b3.f22621667.oop1_project.models.Table;
 
-public class Controller implements IController {
+public class Controller implements ControllerOption {
     private Table table;
     private FileUtility fileUtility;
 
