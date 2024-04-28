@@ -180,7 +180,7 @@ public class Cell {
         boolean decimalPointFound = false;
         for (char c : str.toCharArray()) {
             if (!Character.isDigit(c)) {
-                if (c == '.' || c == ',') {
+                if (c == '.') {
                     if (decimalPointFound) {
                         return false;
                     }
