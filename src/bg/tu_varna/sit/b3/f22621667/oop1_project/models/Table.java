@@ -103,14 +103,9 @@ public class Table {
                 if (c < row.size()) {
                     Cell cell = row.get(c);
                     String content = cell.getContent();
-
-                    tableBuilder.append(String.format("%" + (maxColumnLengths.get(c)) + "s", content)).append(" |");
-
-                    if (c != row.size() - 1) {
-                        tableBuilder.append(" ");
-                    }
+                    tableBuilder.append(String.format("%" + (maxColumnLengths.get(c)) + "s", content)).append(" | ");
                 } else {
-                    tableBuilder.append(String.format("%" + (maxColumnLengths.get(c) + 1) + "s", "")).append("|");
+                    tableBuilder.append(String.format("%" + (maxColumnLengths.get(c) + 1) + "s", "")).append("| ");
                 }
             }
             tableBuilder.append("\n");
