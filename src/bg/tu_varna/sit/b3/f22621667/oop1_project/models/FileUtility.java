@@ -43,7 +43,7 @@ public class FileUtility {
                     }
                 }
                 input = String.join(",", cellContents);
-                getMaxValuesCount(input, maxValuesCount);
+                addRowToTable(input, maxValuesCount);
             }
 
             scanner.close();
@@ -52,7 +52,7 @@ public class FileUtility {
         }
     }
 
-    private void getMaxValuesCount(String input, int maxValuesCount) {
+    private void addRowToTable(String input, int maxValuesCount) {
         int currentMaxValuesCount;
         String[] cellContents = input.split(",");
         currentMaxValuesCount = cellContents.length;
@@ -96,7 +96,7 @@ public class FileUtility {
         }
 
         for (String line : readLines) {
-            getMaxValuesCount(line, maxValuesCount);
+            addRowToTable(line, maxValuesCount);
         }
     }
 

@@ -23,7 +23,7 @@ public class Table {
 
             if (!currentCell.checkContentIntegrity()) {
                 System.out.printf(
-                        "Error: row %d, col %d, %s is unknown data type%n",
+                        "Error: row %d, col %d, %s is unknown data type",
                         r + 1,
                         c + 1,
                         currentCell.getContent());
