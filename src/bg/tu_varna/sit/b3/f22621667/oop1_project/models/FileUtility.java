@@ -53,10 +53,7 @@ public class FileUtility {
     }
 
     private void addRowToTable(String input, int maxValuesCount) {
-        int currentMaxValuesCount;
         String[] cellContents = input.split(",");
-        currentMaxValuesCount = cellContents.length;
-        maxValuesCount = Math.max(maxValuesCount, currentMaxValuesCount);
 
         List<Cell> row = new ArrayList<>();
         for (String cellContent : cellContents) {
