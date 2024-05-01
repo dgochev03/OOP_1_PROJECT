@@ -77,19 +77,12 @@ public class Table {
     }
 
     public void printTable() {
-        int maxRowLength = 0;
-        for (List<Cell> row : cells) {
-            maxRowLength = Math.max(maxRowLength, row.size());
-        }
-
         List<Integer> maxColumnLengths = new ArrayList<>();
         int maxColumnLength = 0;
-        for (int i = 0; i < maxRowLength; i++) {
+        for (int i = 0; i < colCount; i++) {
             for (List<Cell> row : cells) {
                 if (i < row.size()) {
-                    maxColumnLength = Math.max(
-                            maxColumnLength,
-                            row.get(i).getContent().length());
+                    maxColumnLength = Math.max(maxColumnLength, row.get(i).getContent().length());
                 }
             }
 
@@ -99,7 +92,7 @@ public class Table {
 
         StringBuilder tableBuilder = new StringBuilder();
         for (List<Cell> row : cells) {
-            for (int c = 0; c < maxRowLength; c++) {
+            for (int c = 0; c < colCount; c++) {
                 if (c < row.size()) {
                     Cell cell = row.get(c);
                     String content = cell.getContent();
