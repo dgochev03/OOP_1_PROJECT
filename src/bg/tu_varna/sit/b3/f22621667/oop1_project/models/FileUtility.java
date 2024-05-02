@@ -63,7 +63,7 @@ public class FileUtility {
 
         int emptyCellsToAdd = maxValuesCount - row.size();
         for (int i = 0; i < emptyCellsToAdd; i++) {
-            Cell emptyCell = Cell.Empty;
+            Cell emptyCell = Cell.EMPTY;
             row.add(emptyCell);
         }
 

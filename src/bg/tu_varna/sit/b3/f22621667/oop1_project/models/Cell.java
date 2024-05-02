@@ -11,7 +11,7 @@ public class Cell {
     private boolean isCalculated;
     private boolean isString;
 
-    public static final Cell Empty = new Cell("");
+    public static final Cell EMPTY = new Cell("");
 
     public Cell(String content) {
         checkAndExtract(content);
