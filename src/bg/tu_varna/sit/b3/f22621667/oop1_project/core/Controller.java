@@ -125,14 +125,14 @@ public class Controller implements ControllerOption {
     public void help() {
         StringBuilder sb = new StringBuilder();
         sb.append("The following commands are supported:").append("\n");
-        sb.append("open <file>\t\t\t\t\topens <file>").append("\n");
-        sb.append("edit R<N>C<M> = <VALUE>\t\tedits the value of the cell at specified row and column").append("\n");
-        sb.append("print\t\t\t\t\t\tprints the table to the console").append("\n");
-        sb.append("close\t\t\t\t\t\tcloses currently opened file").append("\n");
-        sb.append("save\t\t\t\t\t\tsaves the currently open file").append("\n");
-        sb.append("saveas <file>\t\t\t\tsaves the currently open file in <file>").append("\n");
-        sb.append("help\t\t\t\t\t\tprints this information").append("\n");
-        sb.append("exit\t\t\t\t\t\texits the program").append("\n");
+        sb.append("open <file>                opens <file>").append("\n");
+        sb.append("edit R<N>C<M> = <VALUE>    edits the value of the cell at specified row and column").append("\n");
+        sb.append("print                      prints the table to the console").append("\n");
+        sb.append("close                      closes currently opened file").append("\n");
+        sb.append("save                       saves the currently open file").append("\n");
+        sb.append("saveas <file>              saves the currently open file in <file>").append("\n");
+        sb.append("help                       prints this information").append("\n");
+        sb.append("exit                       exits the program").append("\n");
         String help = sb.toString();
         System.out.println(help);
     }
